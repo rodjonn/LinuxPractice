@@ -1,0 +1,59 @@
+services:
+  linux_a:
+    image: alpine:3.19
+    container_name: kulakov_server
+    hostname: kulakov_server
+    networks:
+      servernet:
+        ipv4_address: 192.168.13.10
+    privileged: true
+    tty: true
+    volumes:
+      - ./application:/app
+      - ./scripts/setup_linux_a.sh:/setup.sh
+    entrypoint: sh /setup.sh
+
+  linux_b:
+    image: alpine:3.19
+    container_name: kulakov_gateway
+    hostname: kulakov_gateway
+    networks:
+      servernet:
+        ipv4_address: 192.168.13.1
+      clientnet:
+        ipv4_address: 192.168.8.1
+    privileged: true
+    tty: true
+    volumes:
+      - ./scripts/setup_linux_b.sh:/setup.sh
+    entrypoint: sh /setup.sh
+
+  linux_c:
+    image: alpine:3.19
+    container_name: kulakov_client
+    hostname: kulakov_client
+    networks:
+      clientnet:
+        ipv4_address: 192.168.8.10
+    privileged: true
+    tty: true
+    volumes:
+      - ./scripts/setup_linux_c.sh:/setup.sh
+    entrypoint: sh /setup.sh
+    depends_on:
+      - linux_a
+      - linux_b
+
+networks:
+  servernet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.13.0/24
+          gateway: 192.168.13.254
+  clientnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.8.0/24
+          gateway: 192.168.8.254

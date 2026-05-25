@@ -1,0 +1,14 @@
+[Unit]
+Description=Flask Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=kulakov_1
+WorkingDirectory=/home/kulakov_1/server/
+ExecStart=/usr/bin/python3 /home/kulakov_1/server/app.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

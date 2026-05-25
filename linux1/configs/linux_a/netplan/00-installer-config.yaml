@@ -1,0 +1,11 @@
+network:
+  ethernets:
+    enp0s3:
+      # Bridge adapter — access from host machine
+      dhcp4: true
+    enp0s8:
+      # Internal network "servernet" — communication with VM B
+      dhcp4: no
+      addresses: [192.168.13.10/24]
+      gateway4: 192.168.13.1
+  version: 2
